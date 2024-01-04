@@ -4,10 +4,8 @@ precios_oferta = '''
         LPTO.*,
         FP.PROM_FECHA_INICIO AS INICIO,
         FP.PROM_FECHA_FIN AS FIN,
-        --LAA.ARTC_ARTC_ID,
-        --LAA.ARTC_ARTC_COD,
         LAA.ORIN,
-        --LAA.ARTC_ARTC_DESC,
+        LAA.ARTC_ARTC_COD AS ESTADISTICO,
         FP.PROM_PVP_OFERTA
     FROM
         MSTRDB.DWH.FT_PROMOS AS FP
@@ -15,9 +13,9 @@ precios_oferta = '''
         INNER JOIN MSTRDB.DWH.LU_PROM_TIPO_OFERTA AS LPTO ON LPTO.TIPO_OFERTA_ID = LPE.TIPO_OFERTA_ID
         INNER JOIN MSTRDB.DWH.LU_ARTC_ARTICULO AS LAA ON FP.ARTC_ARTC_ID = LAA.ARTC_ARTC_ID
     WHERE
-        LPTO.TIPO_OFERTA_ID = {id_promo}
-        AND FP.PROM_FECHA_INICIO >= '{desde_snow}'
-        AND FP.PROM_FECHA_FIN <= '{hasta_snow}'
+        LPTO.TIPO_OFERTA_ID in (10,11,12)
+        AND FP.PROM_FECHA_INICIO >= DATEADD(DAY, -30, '{desde_snow}')
+        AND FP.PROM_FECHA_FIN < '{desde_snow}'
 '''
 
 precios_stock_mediano = '''
@@ -75,6 +73,8 @@ WHERE
     AND FS.TIEM_DIA_ID = CURRENT_DATE() - 1
 GROUP BY
     ALL
+HAVING
+    LOCALES_ACTIVOS_AYER > 0
 '''
 
 days_on_hand_articulo = '''
