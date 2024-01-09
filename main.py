@@ -102,11 +102,7 @@ df_opt = cursor.fetch_pandas_all()
 
     # 4. Locales Activos Ayer
 
-url_locales = 'https://docs.google.com/spreadsheets/d/1WmPELtkFBGWACl1o_Y1njDbAoxSVR3iI-Gx7hx9yrno/export?format=csv'
-locales = pd.read_csv(url_locales)
-cercania = locales[locales['FORMATO'] == 'CERCANIA']
-
-cursor.execute(locales_activos_ayer.format(cercania_snow = tuple(cercania['LOCAL'])))
+cursor.execute(locales_activos_ayer)
 df_locales_activos_ayer = cursor.fetch_pandas_all()
 
     # 5. Days on Hand - Articulos
