@@ -3,6 +3,7 @@ import snowflake.connector
 import json
 from querys import *
 from functions import *
+from datetime import datetime
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
@@ -91,19 +92,23 @@ df_precios_oferta.drop(['R'], axis = 1, inplace = True)
 df_precios_oferta.sort_values(by = ['PRECIO HASTA', 'NOMBRE_PROMO', 'FIN'], ascending = [False, True, False], inplace = True)
 df_precios_oferta['FIN'] = df_precios_oferta['FIN'].astype(str)
 df_precios_oferta['INICIO'] = df_precios_oferta['INICIO'].astype(str)
+df_precios_oferta['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
     # 2. Precios Stock Mediano dia de ayer
 cursor.execute(precios_stock_mediano)
 df_precios_stock_mediano = cursor.fetch_pandas_all()
+df_precios_stock_mediano['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
     # 3. OPT
 cursor.execute(opt)
 df_opt = cursor.fetch_pandas_all()
+df_opt['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
     # 4. Locales Activos Ayer
 
 cursor.execute(locales_activos_ayer)
 df_locales_activos_ayer = cursor.fetch_pandas_all()
+df_locales_activos_ayer['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
     # 5. Days on Hand - Articulos
 cursor.execute(days_on_hand_articulo)
@@ -122,6 +127,7 @@ df_days_on_hand_articulo['UNIDADES'] = round(df_days_on_hand_articulo['UNIDADES'
 df_days_on_hand_articulo['UNIDADES_VENDIDAS'] = round(df_days_on_hand_articulo['UNIDADES_VENDIDAS'], 0).astype(int)
 df_days_on_hand_articulo.rename({'UNIDADES_VENDIDAS':'UNIDADES VENDIDAS'}, axis = 1, inplace = True)
 df_days_on_hand_articulo = df_days_on_hand_articulo[['SUBCLASE', 'ORIN', 'UNIDADES', 'UNIDADES VENDIDAS', 'DAYS ON HAND']]
+df_days_on_hand_articulo['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
     # 6. Days on Hand - Subclases
 cursor.execute(days_on_hand_subclase)
@@ -140,6 +146,7 @@ df_days_on_hand_subclase['UNIDADES'] = round(df_days_on_hand_subclase['UNIDADES'
 df_days_on_hand_subclase['UNIDADES_VENDIDAS'] = round(df_days_on_hand_subclase['UNIDADES_VENDIDAS'], 0).astype(int)
 df_days_on_hand_subclase.rename({'UNIDADES_VENDIDAS':'UNIDADES VENDIDAS'}, axis = 1, inplace = True)
 df_days_on_hand_subclase = df_days_on_hand_subclase[['SUBCLASE', 'UNIDADES', 'UNIDADES VENDIDAS', 'DAYS ON HAND']]
+df_days_on_hand_subclase['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
