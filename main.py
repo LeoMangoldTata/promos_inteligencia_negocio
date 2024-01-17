@@ -61,6 +61,7 @@ else:
 
 url_fechas = 'https://docs.google.com/spreadsheets/d/1JnayuiljvaOebik4gKqNgxSLD6RO2AS8euG7apQykW8/export?format=csv'
 fechas = pd.read_csv(url_fechas)
+fechas = fechas[pd.to_datetime(fechas['HASTA']) + pd.Timedelta(days=1) >= datetime.today()]
 
     # 1. Precios Oferta
 df_precios_oferta = pd.DataFrame()
@@ -181,3 +182,6 @@ if __name__ == "__main__":
 
         # Inserto la DataFrame en una nueva sheet, que ocupa la ultima posicion
         insert_dataframe_into_sheet(df, spreadsheet_id, credentials, sheet_name)
+
+
+    print(f"Lineas df_precios_oferta --> {df_precios_oferta.shape[0]}")
