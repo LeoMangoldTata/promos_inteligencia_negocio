@@ -38,9 +38,6 @@ if os.getcwd() == 'C:\\Users\\leonardo.mangold\\PycharmProjects\\promos_intelige
 	    except:
 	        print('Incorrect Password - provide again')
 
-	    print('Correct Password - connected to SNOWFLAKE')
-
-
 # Conexion VM a Snowflake
 
 else:
@@ -72,7 +69,7 @@ for i in range(len(fechas)):
     hasta = fechas.iloc[i]['HASTA']
     oferta = fechas.iloc[i]['OFERTA']
 
-    cursor.execute(precios_oferta.format(desde_snow = desde, hasta_snow = hasta))
+    cursor.execute(precios_oferta.format(desde_snow = desde))
     df_aux = cursor.fetch_pandas_all()
     df_aux['PRECIO DESDE'] = desde
     df_aux['PRECIO HASTA'] = hasta
@@ -82,12 +79,6 @@ for i in range(len(fechas)):
 df_precios_oferta = df_precios_oferta[['TIPO_OFERTA_ID', 'TIPO_OFERTA_DESC', 'INICIO', 'FIN', 'NOMBRE_PROMO', 'PRECIO DESDE', 'PRECIO HASTA', 'ORIN', 'ESTADISTICO', 'PROM_PVP_OFERTA']]
 
 df_precios_oferta['FIN'] = pd.to_datetime(df_precios_oferta['FIN'])
-
-# Create a new 'Rank' column based on the maximum date for each element of 'X'
-df_precios_oferta['R'] = df_precios_oferta.groupby('ORIN')['FIN'].rank(ascending=False, method='max').astype(int)
-df_precios_oferta = df_precios_oferta[df_precios_oferta['R'] == 1]
-df_precios_oferta.drop_duplicates(subset = 'ORIN', keep = 'first', inplace = True)
-df_precios_oferta.drop(['R'], axis = 1, inplace = True)
 
 df_precios_oferta.sort_values(by = ['PRECIO HASTA', 'NOMBRE_PROMO', 'FIN'], ascending = [False, True, False], inplace = True)
 df_precios_oferta['FIN'] = df_precios_oferta['FIN'].astype(str)
@@ -110,7 +101,9 @@ cursor.execute(locales_activos_ayer)
 df_locales_activos_ayer = cursor.fetch_pandas_all()
 df_locales_activos_ayer['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
-    # 5. Days on Hand - Articulos
+    # 5. Days on Hand
+
+    # Parte A - Articulos
 cursor.execute(days_on_hand_articulo)
 df_days_on_hand_articulo = cursor.fetch_pandas_all()
 
@@ -127,9 +120,10 @@ df_days_on_hand_articulo['UNIDADES'] = round(df_days_on_hand_articulo['UNIDADES'
 df_days_on_hand_articulo['UNIDADES_VENDIDAS'] = round(df_days_on_hand_articulo['UNIDADES_VENDIDAS'], 0).astype(int)
 df_days_on_hand_articulo.rename({'UNIDADES_VENDIDAS':'UNIDADES VENDIDAS'}, axis = 1, inplace = True)
 df_days_on_hand_articulo = df_days_on_hand_articulo[['SUBCLASE', 'ORIN', 'UNIDADES', 'UNIDADES VENDIDAS', 'DAYS ON HAND']]
-df_days_on_hand_articulo['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
-    # 6. Days on Hand - Subclases
+df_days_on_hand_articulo.rename({'DAYS ON HAND':'DAYS ON HAND ARTICULO'}, axis = 1, inplace = True)
+
+    # Parte B - Subclases
 cursor.execute(days_on_hand_subclase)
 df_days_on_hand_subclase = cursor.fetch_pandas_all()
 
@@ -146,7 +140,13 @@ df_days_on_hand_subclase['UNIDADES'] = round(df_days_on_hand_subclase['UNIDADES'
 df_days_on_hand_subclase['UNIDADES_VENDIDAS'] = round(df_days_on_hand_subclase['UNIDADES_VENDIDAS'], 0).astype(int)
 df_days_on_hand_subclase.rename({'UNIDADES_VENDIDAS':'UNIDADES VENDIDAS'}, axis = 1, inplace = True)
 df_days_on_hand_subclase = df_days_on_hand_subclase[['SUBCLASE', 'UNIDADES', 'UNIDADES VENDIDAS', 'DAYS ON HAND']]
-df_days_on_hand_subclase['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
+
+df_days_on_hand_subclase.rename({'DAYS ON HAND':'DAYS ON HAND SUBCLASE'}, axis = 1, inplace = True)
+
+    # Parte C - Consolido en Articulos
+
+df_days_on_hand_articulo = df_days_on_hand_articulo.merge(df_days_on_hand_subclase[['SUBCLASE', 'DAYS ON HAND SUBCLASE']], on = 'SUBCLASE', how = 'left')
+df_days_on_hand_articulo['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
@@ -168,8 +168,7 @@ if __name__ == "__main__":
         'df_precios_stock_mediano': 'Precios Stock Mediano',
         'df_opt': 'OPT',
         'df_locales_activos_ayer': 'Locales Activos Ayer',
-        'df_days_on_hand_articulo': 'Days on Hand - Articulos',
-        'df_days_on_hand_subclase': 'Days on Hand - Subclases'
+        'df_days_on_hand_articulo': 'Days on Hand - Articulos'
     }
 
     for df_name, sheet_name in dataframes_dict.items():
