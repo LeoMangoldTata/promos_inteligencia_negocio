@@ -13,14 +13,6 @@ import os
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 DELETE_SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
-# Ya sea que el codigo se ejecute desde mi pc o desde la VM, el folder ID sera siempre el mismo
-# ya que siempre guardaremos los spreadsheets en la misma carpeta
-
-if os.getcwd() == 'C:\\Users\\leonardo.mangold\\PycharmProjects\\promos_inteligencia_negocio':
-    FOLDER_ID = '11yV-IyMUXCjQRvXBiDNYIEg_pDc6HglL'
-else:
-    FOLDER_ID = '1js40bDjRG7XcxeDUGoWYy4wBbsDPjwMu'
-
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 

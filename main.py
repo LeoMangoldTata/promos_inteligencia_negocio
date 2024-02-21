@@ -4,9 +4,19 @@ import json
 from querys import *
 from functions import *
 from datetime import datetime
+pd.options.mode.chained_assignment = None
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
+
+
+
+FOLDER_ID = '11yV-IyMUXCjQRvXBiDNYIEg_pDc6HglL' # Mi Unidad / Promos
+
+# Mi Unidad / Promos
+url = 'https://docs.google.com/spreadsheets/d/1w5oGifgavq1GodX3z9t9UF8ALeOl6NzMWiu_4xPG8FE/edit'
+
+spreadsheet_id = url.split('/')[-2]
 
 # Conexion Snowflake desde compu personal
 
@@ -185,3 +195,4 @@ if __name__ == "__main__":
 
 
     print(f"Lineas df_precios_oferta --> {df_precios_oferta.shape[0]}")
+    print(f"Lineas df_precios_stock_mediano --> {df_precios_stock_mediano.shape[0]}")
