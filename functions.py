@@ -12,7 +12,6 @@ import os
 # ----------------------------------------------------------------------
 
 #SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-#SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 #DELETE_SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
@@ -27,9 +26,11 @@ def get_credentials():
     if os.getcwd() == 'C:\\Users\\leonardo.mangold\\PycharmProjects\\promos_inteligencia_negocio':
         if os.path.exists("token.json"):
             credentials = Credentials.from_authorized_user_file("token.json", SCOPES)
-    else:
+    elif os.getcwd() == r'C:\Users\arturo.botata12\Documents\GitHub\promos_inteligencia_negocio':
         if os.path.exists("token_vm.json"):
             credentials = Credentials.from_authorized_user_file("token_vm.json", SCOPES)
+    else:
+        raise ValueError("Unknown working directory. Unable to determine the correct client secrets file.")
 
     # If there are no (valid) credentials available, let the user log in.
 
@@ -39,8 +40,10 @@ def get_credentials():
         else:
             if os.getcwd() == 'C:\\Users\\leonardo.mangold\\PycharmProjects\\promos_inteligencia_negocio':
                 flow = InstalledAppFlow.from_client_secrets_file("api_credentials.json", SCOPES)
-            else:
+            elif os.getcwd() == r'C:\Users\arturo.botata12\Documents\GitHub\promos_inteligencia_negocio':
                 flow = InstalledAppFlow.from_client_secrets_file("api_credentials_vm.json", SCOPES)
+            else:
+                raise ValueError("Unknown working directory. Unable to determine the correct client secrets file.")
             credentials = flow.run_local_server(port=0)
     # Save the credentials for the next run
         if os.getcwd() == 'C:\\Users\\leonardo.mangold\\PycharmProjects\\promos_inteligencia_negocio':
