@@ -155,6 +155,9 @@ if __name__ == "__main__":
         'df_days_on_hand_articulo': 'Days on Hand - Articulos'
     }
 
+    # Mueve la sheet 'Precios oferta 2' a la ultima posicion
+    move_sheet_to_last_position(spreadsheet_id, credentials)
+
     for df_name, sheet_name in dataframes_dict.items():
 
         # Elimino la primera sheet
@@ -166,8 +169,6 @@ if __name__ == "__main__":
         # Inserto la DataFrame en una nueva sheet, que ocupa la ultima posicion
         insert_dataframe_into_sheet(df, spreadsheet_id, credentials, sheet_name)
 
-    # Mueve la sheet 'Precios oferta 2' a la ultima posicion
-    move_sheet_to_last_position(spreadsheet_id, credentials)
 
     print(f"Lineas df_precios_oferta --> {df_precios_oferta.shape[0]}")
     print(f"Lineas df_precios_stock_mediano --> {df_precios_stock_mediano.shape[0]}")
