@@ -164,7 +164,7 @@ if __name__ == "__main__":
         print(df_name, sheet_name)
 
         # Inserto la DataFrame en una nueva sheet, que ocupa la ultima posicion
-        insert_dataframe_into_sheet(df.head(), spreadsheet_id, credentials, sheet_name)
+        insert_dataframe_into_sheet(df, spreadsheet_id, credentials, sheet_name)
 
     # Mueve la sheet 'Precios oferta 2' a la ultima posicion
     move_sheet_to_last_position(spreadsheet_id, credentials)
