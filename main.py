@@ -167,7 +167,7 @@ if __name__ == "__main__":
         print(df_name, sheet_name)
 
         # Inserto la DataFrame en una nueva sheet, que ocupa la ultima posicion
-        insert_dataframe_into_sheet(df, spreadsheet_id, credentials, sheet_name)
+        insert_dataframe_into_sheet(df.head(), spreadsheet_id, credentials, sheet_name)
 
 
     print(f"Lineas df_precios_oferta --> {df_precios_oferta.shape[0]}")

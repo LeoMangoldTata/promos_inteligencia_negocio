@@ -11,8 +11,10 @@ import os
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 
-SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-DELETE_SCOPES = ['https://www.googleapis.com/auth/drive.file']
+#SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+#SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
+#DELETE_SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
