@@ -2,6 +2,7 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from google.auth import exceptions
 import gspread
 from gspread_dataframe import set_with_dataframe
 import numpy as np
@@ -179,3 +180,119 @@ def delete_first_sheet(spreadsheet_id, credentials):
     # Elimino la primer sheet
     for sheet_title in sheet_titles[:1]:
         spreadsheet.del_worksheet(spreadsheet.worksheet(sheet_title))
+
+def move_sheet_to_last_position(spreadsheet_id, credentials):
+    try:
+
+        client = gspread.authorize(credentials)
+
+        # Open the spreadsheet by its ID
+        spreadsheet = client.open_by_key(spreadsheet_id)
+
+        # Get the worksheet object by its title
+        target_sheet_name = 'Precios oferta 2'
+
+        # Get a list of all worksheets excluding the target sheet
+        other_sheets = [sheet for sheet in spreadsheet.worksheets() if sheet.title != target_sheet_name]
+
+        # Find the target sheet object
+        target_sheet = spreadsheet.worksheet(target_sheet_name)
+
+        # Reorder the sheets by adding the target sheet at the end
+        new_sheet_order = other_sheets + [target_sheet]
+
+        # Batch update to move the sheets
+        spreadsheet.batch_update({
+            "requests": [
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": sheet._properties['sheetId'],
+                            "index": i
+                        },
+                        "fields": "index"
+                    }
+                } for i, sheet in enumerate(new_sheet_order)
+            ]
+        })
+
+        print(f"The sheet '{target_sheet_name}' has been moved to the last position.")
+
+    except exceptions.GoogleAuthError as e:
+        print(f"Authentication error: {e}")
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

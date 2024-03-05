@@ -9,15 +9,6 @@ pd.options.mode.chained_assignment = None
 # ----------------------------------------------------------------------
 # ----------------------------------------------------------------------
 
-
-
-FOLDER_ID = '11yV-IyMUXCjQRvXBiDNYIEg_pDc6HglL' # Mi Unidad / Promos
-
-# Mi Unidad / Promos
-url = 'https://docs.google.com/spreadsheets/d/1w5oGifgavq1GodX3z9t9UF8ALeOl6NzMWiu_4xPG8FE/edit'
-
-spreadsheet_id = url.split('/')[-2]
-
 # Conexion Snowflake desde compu personal
 
 if os.getcwd() == 'C:\\Users\\leonardo.mangold\\PycharmProjects\\promos_inteligencia_negocio':
@@ -67,31 +58,10 @@ else:
 
 # DataFrames
 
-# Fechas indicadas por Juli para tomar los precios
-
-url_fechas = 'https://docs.google.com/spreadsheets/d/1JnayuiljvaOebik4gKqNgxSLD6RO2AS8euG7apQykW8/export?format=csv'
-fechas = pd.read_csv(url_fechas)
-fechas = fechas[pd.to_datetime(fechas['HASTA']) + pd.Timedelta(days=1) >= datetime.today()]
-
     # 1. Precios Oferta
-df_precios_oferta = pd.DataFrame()
-for i in range(len(fechas)):
-    desde = fechas.iloc[i]['DESDE']
-    hasta = fechas.iloc[i]['HASTA']
-    oferta = fechas.iloc[i]['OFERTA']
+cursor.execute(precios_oferta)
+df_precios_oferta = cursor.fetch_pandas_all()
 
-    cursor.execute(precios_oferta.format(desde_snow = desde))
-    df_aux = cursor.fetch_pandas_all()
-    df_aux['PRECIO DESDE'] = desde
-    df_aux['PRECIO HASTA'] = hasta
-    df_aux['NOMBRE_PROMO'] = oferta
-    df_precios_oferta = pd.concat([df_precios_oferta, df_aux])
-
-df_precios_oferta = df_precios_oferta[['TIPO_OFERTA_ID', 'TIPO_OFERTA_DESC', 'INICIO', 'FIN', 'NOMBRE_PROMO', 'PRECIO DESDE', 'PRECIO HASTA', 'ORIN', 'ESTADISTICO', 'PROM_PVP_OFERTA']]
-
-df_precios_oferta['FIN'] = pd.to_datetime(df_precios_oferta['FIN'])
-
-df_precios_oferta.sort_values(by = ['PRECIO HASTA', 'NOMBRE_PROMO', 'FIN'], ascending = [False, True, False], inplace = True)
 df_precios_oferta['FIN'] = df_precios_oferta['FIN'].astype(str)
 df_precios_oferta['INICIO'] = df_precios_oferta['INICIO'].astype(str)
 df_precios_oferta['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-%m-%d')
@@ -166,8 +136,11 @@ df_days_on_hand_articulo['FECHA_ACTUALIZACION'] = datetime.today().strftime('%Y-
 if __name__ == "__main__":
 
     credentials = get_credentials()
-    spreadsheet_id = '1w5oGifgavq1GodX3z9t9UF8ALeOl6NzMWiu_4xPG8FE'
-    # Debido a que siempre mantenemos la misma spreadsheet, su id no cambia
+
+    # Unidad Inteligencia de Negocio
+    url = 'https://docs.google.com/spreadsheets/d/1hqkPO6ych3MT3oJVFUkk9nBEvyhIcARPaVF86uFMPJ0/edit#gid=0'
+
+    spreadsheet_id = url.split('/')[-2]
 
     # Create a Google Sheets API service --> esto se usa en caso de usar la funcion 2
     service = build('sheets', 'v4', credentials=credentials)
@@ -191,8 +164,10 @@ if __name__ == "__main__":
         print(df_name, sheet_name)
 
         # Inserto la DataFrame en una nueva sheet, que ocupa la ultima posicion
-        insert_dataframe_into_sheet(df, spreadsheet_id, credentials, sheet_name)
+        insert_dataframe_into_sheet(df.head(), spreadsheet_id, credentials, sheet_name)
 
+    # Mueve la sheet 'Precios oferta 2' a la ultima posicion
+    move_sheet_to_last_position(spreadsheet_id, credentials)
 
     print(f"Lineas df_precios_oferta --> {df_precios_oferta.shape[0]}")
     print(f"Lineas df_precios_stock_mediano --> {df_precios_stock_mediano.shape[0]}")
