@@ -138,7 +138,9 @@ if __name__ == "__main__":
     credentials = get_credentials()
 
     # Unidad Inteligencia de Negocio
-    url = 'https://docs.google.com/spreadsheets/d/1hqkPO6ych3MT3oJVFUkk9nBEvyhIcARPaVF86uFMPJ0/edit#gid=0'
+    #url = 'https://docs.google.com/spreadsheets/d/1hqkPO6ych3MT3oJVFUkk9nBEvyhIcARPaVF86uFMPJ0/edit#gid=0'
+    url = 'https://docs.google.com/spreadsheets/d/1w5oGifgavq1GodX3z9t9UF8ALeOl6NzMWiu_4xPG8FE/edit?usp=sharing'
+
 
     spreadsheet_id = url.split('/')[-2]
 
@@ -167,7 +169,7 @@ if __name__ == "__main__":
         print(df_name, sheet_name)
 
         # Inserto la DataFrame en una nueva sheet, que ocupa la ultima posicion
-        insert_dataframe_into_sheet(df.head(), spreadsheet_id, credentials, sheet_name)
+        insert_dataframe_into_sheet(df, spreadsheet_id, credentials, sheet_name)
 
 
     print(f"Lineas df_precios_oferta --> {df_precios_oferta.shape[0]}")
