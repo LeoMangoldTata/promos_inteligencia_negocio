@@ -1,4 +1,17 @@
 precios_oferta = '''
+SELECT
+    DISTINCT
+    INICIO,
+    FIN,
+    ORIN,
+    ESTADISTICO,
+    MIN(PROM_PVP_OFERTA) AS MIN_PROM_PVP_OFERTA,
+    PROM_PVP_OFERTA,
+    FIN_AJUSTADO,
+    EVENTO_DESC,
+    ARTC_ARTC_DESC
+FROM
+    (
     SELECT
         DISTINCT        
         FP.PROM_FECHA_INICIO AS INICIO,
@@ -16,8 +29,11 @@ precios_oferta = '''
         INNER JOIN MSTRDB.DWH.LU_ARTC_ARTICULO AS LAA ON FP.ARTC_ARTC_ID = LAA.ARTC_ARTC_ID
     WHERE
         FP.PROM_FECHA_fin >= DATEADD(DAY, -30, CURRENT_DATE)
+       
     ORDER BY
-        3 DESC
+        3 DESC) 
+GROUP BY
+    ALL
 '''
 
 precios_stock_mediano = '''
